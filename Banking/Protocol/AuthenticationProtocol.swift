@@ -24,7 +24,7 @@ protocol AuthenticationProtocol{
     
     func isEmailVerified() async throws -> Bool
     
+    func saveToKeychain(email: String, password: String)
     
-    
-    
+    func loadFromKeychain() -> (email: String, password: String)? 
 }
