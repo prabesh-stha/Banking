@@ -8,19 +8,35 @@
 import SwiftUI
 
 struct RootView: View {
+    @StateObject private var viewModel: RootViewModel
     @Binding var isLoggedIn: Bool
     init(isLoggedIn: Binding<Bool>) {
+        _viewModel = StateObject(wrappedValue: RootViewModel(user: AuthenticationManager()))
         _isLoggedIn = isLoggedIn
     }
+    @Environment(\.dismiss) var dismiss
+
     var body: some View {
         NavigationStack{
             TabView {
                 Tab("Home", systemImage: "house") {
-                    HomeView()
+                    HomeView(userId: viewModel.userId)
                 }
                 Tab("Setting", systemImage: "gear") {
-                    SettingView(isLoggedIn: $isLoggedIn)
+                    SettingView(userId: viewModel.userId, isLoggedIn: $isLoggedIn)
                 }
+            }
+        }
+        .onAppear{
+            viewModel.getUser()
+        }
+        .alert("Message", isPresented: $viewModel.showMessage) {
+            Button("OK"){
+                dismiss()
+            }
+        } message: {
+            if let errorMessage = viewModel.errorMessage{
+                Text(errorMessage)
             }
         }
     }

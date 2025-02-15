@@ -6,3 +6,13 @@
 //
 
 import Foundation
+
+protocol TransactionProtocol{
+    
+    func createTransaction(transaction: TransactionModel) async throws
+    
+    func getTransactions(userId: String) async throws -> [TransactionModel]
+    
+    func transferMoney(from senderAccountNumber: String, to recipientAccountNumber: String, amount: Double) async throws -> Bool
+    
+}

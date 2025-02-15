@@ -10,7 +10,6 @@ import Combine
 
 protocol UserProtocol {
     func createNewUser(user: UserModel) async throws
-    func getUser(userId: String) -> AnyPublisher<UserModel, Error>
-    func createAccount(userId: String, account: AccountModel) async throws
-    func getAccount(userId: String) -> AnyPublisher< AccountModel, Error>
+    func getUser(userId: String) async throws -> UserModel
+
 }

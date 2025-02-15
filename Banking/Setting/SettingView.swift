@@ -8,12 +8,14 @@
 import SwiftUI
 
 struct SettingView: View {
+    let userId: String
     @StateObject private var viewModel: SettingViewModel
     @Binding var isLoggedIn: Bool
     
-    init(isLoggedIn: Binding<Bool>) {
-        _viewModel = StateObject(wrappedValue: SettingViewModel(auth: AuthenticationManager()))
+    init(userId: String, isLoggedIn: Binding<Bool>) {
+        _viewModel = StateObject(wrappedValue: SettingViewModel(auth: AuthenticationManager(), account: AccountManager()))
         _isLoggedIn = isLoggedIn
+        self.userId = userId
     }
     var body: some View {
         List {
@@ -35,11 +37,32 @@ struct SettingView: View {
             } message: {
                 Text(viewModel.alertMessage)
             }
+            NavigationLink {
+                ProfileView()
+            } label: {
+                Text("Profile")
+            }
 
+            
+            if let userAccount = viewModel.userAccount {
+                NavigationLink {
+                    ChangePinView(accountNo: userAccount.accountNo)
+                } label: {
+                    Text("Change Pin")
+                        .foregroundStyle(Color.blue)
+                }
+
+            }
+
+        }
+        .onAppear {
+            Task{
+                try await viewModel.getAccount(userId: userId)
+            }
         }
     }
 }
 
 #Preview {
-    SettingView(isLoggedIn: .constant(false))
+    SettingView(userId: "", isLoggedIn: .constant(false))
 }

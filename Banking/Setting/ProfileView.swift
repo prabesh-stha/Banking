@@ -8,8 +8,21 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @StateObject private var viewModel: ProfileViewModel
+    init() {
+        _viewModel = StateObject(wrappedValue: ProfileViewModel(user: UserManager(), auth: AuthenticationManager()))
+    }
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack{
+            if let user = viewModel.userAccount {
+                Text(user.firstName)
+            }
+        }
+        .onAppear {
+            Task{
+                try await viewModel.getUser()
+            }
+        }
     }
 }
 

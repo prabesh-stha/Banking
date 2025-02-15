@@ -8,9 +8,28 @@
 import Foundation
 import SwiftUI
 
-struct CustomTextField: ViewModifier{
-    var
-    func body(content: Content) -> some View {
-        <#code#>
+struct CustomTextField: View{
+    @Binding var text: String
+    let title: String
+    @Binding var show: Bool
+    var focusState: FocusState<Bool>.Binding
+    let imageName: String
+    var body: some View{
+            ZStack{
+                if show{
+                    TextField(title, text: $text)
+                        .focused(focusState)
+                }else{
+                    SecureField(title, text: $text)
+                        .focused(focusState)
+                }
+            }
+            
+            .textFieldStyle(isFocused: focusState, imageName: imageName)
+            
     }
 }
+//
+//#Preview {
+//    CustomTextField(text: .constant(""), title: "Email", show: .constant(true), focusState: FocusState.Binding(false), imageName: "")
+//}
